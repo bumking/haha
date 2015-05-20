@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width,user-scalable=no" />
+<title>Wearable UI</title>
+<link rel="stylesheet" href="lib/tau/wearable/theme/default/tau.min.css">
+<!-- load theme file for your application -->
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+	<div id="1btnPopup" class="ui-popup">
+		<div class="ui-popup-header">경고</div>
+		<div class="ui-popup-content">현재 에어컨에 연결되지 않았습니다.</div>
+		<div class="ui-popup-footer">
+			<button id="1btnPopup-cancel" class="ui-btn">Cancel</button>
+		</div>
+	</div>
+
+	<div class="ui-page  ui-page-active" id="onoff">
+		<header class="ui-header">
+			<h2 class="ui-title">Human Conditioner</h2>
+		</header>
+		<div class="ui-content">
+			<ul class="ui-listview">
+				<p id="hoho">onoff!</p>
+			</ul>
+			<button type="button" class="ui-btn ui-btn-icon" id="onoff-btn"
+				onclick="onoffclicked()"
+				style="background: url(images/bgpoweroff.png) transparent no-repeat center; background-position: center; height: 240px !important; background-size: 55%;">ff</button>
+
+			<ul class="ui-listview ui-grid-col-2">
+				<button type="button" class="ui-btn" id="setting-back-btn"
+					style="height: 76px">연결</button>
+				<button type="button" class="ui-btn" id="onoff-setting-btn"
+					style="height: 76px" onclick="gotosetting()">설정</button>
+
+			</ul>
+
+		</div>
+	</div>
+
+
+	<div class="ui-page" id="main">
+		<header class="ui-header">
+			<h2 class="ui-title">Human Conditioner</h2>
+		</header>
+		<div class="ui-content">
+			<ul class="ui-listview">
+				<p id="haha">START!</p>
+			</ul>
+
+			<button type="button" class="ui-btn ui-btn-icon" id="main-btn"
+				onclick="fine()"
+				style="background: url(images/Circle.png) transparent no-repeat center; background-position: center; height: 240px !important; background-size: 50%;">ff</button>
+			<ul class="ui-listview ui-grid-col-2">
+				<button type="button" class="ui-btn" id="setting-back-btn"
+					style="height: 76px">연결</button>
+				<button type="button" class="ui-btn" id="onoff-setting-btn"
+					style="height: 76px" onclick="gotosetting()">설정</button>
+
+			</ul>
+
+		</div>
+
+
+
+		<div class="ui-page" id="setting">
+			<header class="ui-header">
+				<h2 class="ui-title">Human Conditioner</h2>
+			</header>
+			<div class="ui-content">
+				<ul class="ui-listview">
+					<p id="haha">SETTING!</p>
+				</ul>
+				<input type="checkbox" name="mycheck" id="check-test"
+					checked="checked" /> <label for="check-test">진동</label>
+
+				<button type="button" class="ui-btn" id="setting-back-btn"
+					onclick="gotoback()">뒤로 가기</button>
+				</ul>
+
+			</div>
+		</div>
+</body>
+<script type="text/javascript" src="lib/tau/wearable/js/tau.min.js"></script>
+<!-- load javascript file for your application -->
+<script src="js/app.js"></script>
+<script src="js/lowBatteryCheck.js"></script>
+<script>
+	var element = document.getElementById('main-btn');
+	var connectbtn = document.getElementById('setting-back-btn');
+	var onoffbtn = document.getElementById('onoff-btn');
+	var settingbox = document.getElementById('check-test');
+	var maintext = document.getElementById('haha');
+	var hohotext = document.getElementById('hoho');
+
+	var currentmode = 1;
+	var currentonoff = 0;
+	var currentconnect = 0;
+
+	var webSocket;
+
+	document.getElementById('1btnPopup-cancel').addEventListener('click',
+			function(ev) {
+				tau.closePopup();
+			});
+
+	connectbtn.addEventListener('click', start);
+
+	function sendMessage(msg) {
+		if (webSocket.readyState === 1) {
+			webSocket.send(msg);
+		}
+	}
+
+	function gotousermode() {
+		console.log("setting clicked");
+	};
+
+	function fine() {
+		if (currentconnect != 1) {
+			tau.openPopup("#1btnPopup");
+			navigator.vibrate(2000);
+		} else {
+			sendMessage("5");
+			maintext.innerHTML = "CLICK!";
+		}
+	}
+
+	function appexit() {
+
+		console.log("app exit clicked");
+	};
+
+	function gotoback() {
+		console.log("gotoback clicked");
+		if (currentmode == 1) {
+			gotomain();
+		} else
+			gotoonoff();
+
+	};
+
+	function gotosetting() {
+		console.log("setting clicked");
+		tau.changePage(setting);
+	};
+
+	function onoffclicked() {
+
+		if (currentconnect != 1) {
+			tau.openPopup("#1btnPopup");
+			navigator.vibrate(2000);
+		} else {
+			if (currentonoff == 0) {
+				onoffbtn
+						.setAttribute(
+								'style',
+								"background: url(images/bgpoweron.png) transparent no-repeat center; background-position: center; height: 240px !important; background-size: 55%;");
+				currentonoff = 1;
+				maintext.innerHTML = "ON!";
+
+				/* Popup closes with Cancel button click */
+
+				sendMessage("1");
+
+			} else {
+				onoffbtn
+						.setAttribute(
+								'style',
+								"background: url(images/bgpoweroff.png) transparent no-repeat center; background-position: center; height: 240px !important; background-size: 55%;");
+				currentonoff = 0;
+				maintext.innerHTML = "OFF!";
+				sendMessage("2");
+
+			}
+		}
+	};
+
+	function gotoonoff() {
+
+		currentmode = 2;
+		tau.changePage(onoff);
+	};
+
+	function gotomain() {
+		console.log("main clicked");
+		maintext.innerHTML = "START!";
+		currentmode = 1;
+		tau.changePage(main);
+	};
+
+	function start() {
+		console.log("button clicked");
+		maintext.innerHTML = "CLICK!";
+
+		// Define WebSocket url
+		var webSocketURL = "ws://192.168.0.33:80/";
+		//var webSocketURL = "ws://echo.websocket.org";
+
+		// Define WebSocket
+		webSocket = new WebSocket(webSocketURL);
+
+		console.log("created");
+
+		// When the WebSocket connection is established
+		webSocket.onopen = function(e) {
+			console.log('connection open, readyState : ' + e.target.readyState);
+			hohotext.innerHTML = "CONNECT!";
+			currentconnect = 1;
+
+		};
+
+		// When the WebSocket message has been received
+		webSocket.onmessage = function(e) {
+			console.log('server message : ' + e.data);
+
+			/*if (e.data.indexOf("Tempvalue") != -1) {
+
+				var start = e.data.indexOf(":");
+				var end = e.data.indexOf(".");
+			 */
+			if(currentmode == 1)
+			maintext.innerHTML = e.data;
+			else if(currentmode == 2)
+			hohotext.innerHTML = e.data;
+			
+
+		};
+
+		// When fail the WebSocket connection or the WebSocket connection is closed with prejudice
+		webSocket.onerror = function(e) {
+			console.log('error, readyState : ' + e.target.readyState);
+			currentconnect = 0;
+		};
+
+		// When the WebSonection is closed
+		webSocket.onclose = function(e) {
+			console.log('current readyState : ' + e.target.readyState);
+			currentconnect = 0;
+		};
+
+		function closeConnection() {
+			if (webSocket.readyState === 1) {
+				webSocket.close();
+			}
+		}
+		;
+
+
+		window.onload = function() {
+			document.getElementById('btnSendMessage').onclick = function(e) {
+				//sendMessage("123123");
+			}
+		};
+
+		console.log("you reach the end of the line");
+	}
+
+	tau.event.enableGesture(element, new tau.event.gesture.Swipe({
+		orientation : "vertical"
+	}));
+
+	tau.event.enableGesture(element, new tau.event.gesture.Swipe({
+		orientation : "horizontal"
+	}));
+
+	tau.event.enableGesture(onoffbtn, new tau.event.gesture.Swipe({
+		orientation : "horizontal"
+	}));
+
+	console.log("enable gesture");
+
+	element.addEventListener("swipe", function(e) {
+		console.log(e.detail.direction + "swipe event fired");
+
+		if (e.detail.direction == 'left') {
+			gotoonoff();
+		} else {
+			if (currentconnect != 1) {
+				tau.openPopup("#1btnPopup");
+				navigator.vibrate(2000);
+			} else {
+				if (e.detail.direction == 'up') {
+					maintext.innerHTML = "UP!";
+					sendMessage("3");
+				} else if (e.detail.direction == 'down') {
+					maintext.innerHTML = "DOWN!";
+					sendMessage("4");
+				} else if (e.detail.direction == 'left')
+					gotoonoff();
+				else
+				
+				 if (e.detail.direction == 'right')
+					maintext.innerHTML = "LEFT!";
+			}
+		}
+	});
+
+	onoffbtn.addEventListener("swipe", function(e) {
+		console.log(e.detail.direction + "swipe event fired");
+
+		if (e.detail.direction == 'right') {
+			gotomain();
+		} else {
+			if (currentconnect != 1) {
+				tau.openPopup("#1btnPopup");
+				navigator.vibrate(1000);
+			}
+
+			else {
+				if (e.detail.direction == 'left')
+					maintext.innerHTML = "RIGHT!";
+			}
+		}
+
+	}
+	);
+</script>
+</html>
