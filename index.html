@@ -2,176 +2,240 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width,user-scalable=no" />
-<title>Wearable UI</title>
+<title>HUCON</title>
 <link rel="stylesheet" href="lib/tau/wearable/theme/default/tau.min.css">
 <!-- load theme file for your application -->
 <link rel="stylesheet" href="css/style.css">
+
 </head>
 <body>
 
-	<div id="1btnPopup" class="ui-popup">
+	<div id="warningpopup" class="ui-popup">
 		<div class="ui-popup-header">경고</div>
 		<div class="ui-popup-content">현재 에어컨에 연결되지 않았습니다.</div>
 		<div class="ui-popup-footer">
-			<button id="1btnPopup-cancel" class="ui-btn">Cancel</button>
+			<button id="warningpopup-cancel" class="ui-btn">OK</button>
 		</div>
 	</div>
 
-	<div class="ui-page  ui-page-active" id="onoff">
+	<div id="pushpopup" class="ui-popup">
+		<div class="ui-popup-header">알림</div>
+		<div class="ui-popup-content">현재 온도는 만족스러우신가요?</div>
+		<div class="ui-popup-footer">
+			<button id="pushPopup-cancel" class="ui-btn">OK</button>
+		</div>
+	</div>
+
+	<div id="heartpopup" class="ui-popup">
+		<div class="ui-popup-header">알림</div>
+		<div class="ui-popup-content">정확한 계산을 위해 심박수를 측정합니다.</div>
+
+	</div>
+
+	<div id="connectpopup" class="ui-popup">
+		<div class="ui-popup-header">알림</div>
+		<div class="ui-popup-content" id="popuptext">에어컨으로 연결중입니다.</div>
+
+	</div>
+
+	<div id="successpopup" class="ui-popup">
+		<div class="ui-popup-header">알림</div>
+		<div class="ui-popup-content">성공적으로 전달했습니다.</div>
+		<div class="ui-popup-footer">
+			<button id="successpopup-cancel" class="ui-btn">OK</button>
+		</div>
+	</div>
+
+	<div class="ui-page ui-page-active" id="onoff">
 		<header class="ui-header">
 			<h2 class="ui-title">Human Conditioner</h2>
 		</header>
 		<div class="ui-content">
-			<ul class="ui-listview">
-				<p id="hoho">onoff!</p>
-			</ul>
+
 			<button type="button" class="ui-btn ui-btn-icon" id="onoff-btn"
 				onclick="onoffclicked()"
-				style="background: url(images/bgpoweroff.png) transparent no-repeat center; background-position: center; height: 240px !important; background-size: 55%;">ff</button>
+				style="top: 20px; position: relative; background: url(images/bgpoweroff.png) transparent no-repeat center; background-position: center; height: 333px !important; background-size: 70%;">ff</button>
 
 			<ul class="ui-listview ui-grid-col-2">
-				<button type="button" class="ui-btn" id="setting-back-btn"
-					style="height: 76px">연결</button>
+				<button type="button" class="ui-btn" id="onoff_con"
+					style="height: 76px" onclick="start()">연결</button>
 				<button type="button" class="ui-btn" id="onoff-setting-btn"
 					style="height: 76px" onclick="gotosetting()">설정</button>
 
 			</ul>
-
 		</div>
 	</div>
-
 
 	<div class="ui-page" id="main">
 		<header class="ui-header">
 			<h2 class="ui-title">Human Conditioner</h2>
 		</header>
 		<div class="ui-content">
-			<ul class="ui-listview">
-				<p id="haha">START!</p>
-			</ul>
 
+			<p id="Tempvalue"
+				style="top: 55px; left: 115px; font-size: 110px; text-align: center; position: fixed;">40</p>
 			<button type="button" class="ui-btn ui-btn-icon" id="main-btn"
 				onclick="fine()"
-				style="background: url(images/Circle.png) transparent no-repeat center; background-position: center; height: 240px !important; background-size: 50%;">ff</button>
+				style="position: relative; background: url(images/Circle.png) transparent no-repeat center; background-position: center; height: 333px !important; background-size: 70%;">ff</button>
+
 			<ul class="ui-listview ui-grid-col-2">
-				<button type="button" class="ui-btn" id="setting-back-btn"
-					style="height: 76px">연결</button>
+				<button type="button" class="ui-btn" id="main_con"
+					style="height: 76px" onclick="start()">연결</button>
 				<button type="button" class="ui-btn" id="onoff-setting-btn"
 					style="height: 76px" onclick="gotosetting()">설정</button>
 
 			</ul>
 
 		</div>
+	</div>
 
+	<div class="ui-page" id="power">
+		<header class="ui-header">
+			<h2 class="ui-title">Human Conditioner</h2>
+		</header>
+		<div class="ui-content">
+			<ul class="ui-listview">
+				<p id="powertext" style="font-size: 100px; text-align: center;">PW</p>
+			</ul>
+		</div>
+	</div>
 
+	<div class="ui-page" id="setting">
+		<header class="ui-header">
+			<h2 class="ui-title">Human Conditioner</h2>
+		</header>
+		<div class="ui-content">
+			<ul class="ui-listview">
+				<p></p>
+				<button type="button" class="ui-btn" id="sleep-btn"
+					onclick="gotosleep()">절전 모드</button>
+				<p></p>
 
-		<div class="ui-page" id="setting">
-			<header class="ui-header">
-				<h2 class="ui-title">Human Conditioner</h2>
-			</header>
-			<div class="ui-content">
-				<ul class="ui-listview">
-					<p id="haha">SETTING!</p>
-				</ul>
-				<input type="checkbox" name="mycheck" id="check-test"
-					checked="checked" /> <label for="check-test">진동</label>
+				<input type="checkbox" name="mycheck" id="vibe_check"
+					checked="checked" />
+				<label for="check-test">진동</label>
+				<p></p>
+				<input type="checkbox" name="mycheck2" id="push_check"
+					checked="checked" />
+				<label for="check-test">푸시 메세지</label>
 
 				<button type="button" class="ui-btn" id="setting-back-btn"
-					onclick="gotoback()">뒤로 가기</button>
-				</ul>
+					style="position: relative; top: 22px;" onclick="gotoback()">뒤로
+					가기</button>
+			</ul>
 
-			</div>
 		</div>
+	</div>
 </body>
+
 <script type="text/javascript" src="lib/tau/wearable/js/tau.min.js"></script>
 <!-- load javascript file for your application -->
 <script src="js/app.js"></script>
 <script src="js/lowBatteryCheck.js"></script>
 <script>
-	var element = document.getElementById('main-btn');
-	var connectbtn = document.getElementById('setting-back-btn');
+	var mainbtn = document.getElementById('main-btn');
 	var onoffbtn = document.getElementById('onoff-btn');
-	var settingbox = document.getElementById('check-test');
-	var maintext = document.getElementById('haha');
-	var hohotext = document.getElementById('hoho');
+	var setting_vibe = document.getElementById('vibe_check');
+	var setting_push = document.getElementById('push_check');
+	var Tempvalue = document.getElementById('Tempvalue');
+	var sleepbtn = document.getElementById('sleep-btn');
+	var powertext = document.getElementById('powertext');
+	var onoff_con = document.getElementById('onoff_con');
+	var main_con = document.getElementById('main_con');
+	var popuptext = document.getElementById('popuptext');
 
-	var currentmode = 1;
+	var currentmode = 0;
 	var currentonoff = 0;
 	var currentconnect = 0;
 
 	var webSocket;
+	var counter = 0;
+	var HR_val = 0;
+	var sleepindex = 0;
 
-	document.getElementById('1btnPopup-cancel').addEventListener('click',
+	document.getElementById('warningpopup-cancel').addEventListener('click',
 			function(ev) {
 				tau.closePopup();
 			});
 
-	connectbtn.addEventListener('click', start);
+	document.getElementById('pushPopup-cancel').addEventListener('click',
+			function(ev) {
+				tau.closePopup();
+			});
+	document.getElementById('successpopup-cancel').addEventListener('click',
+			function(ev) {
+				tau.closePopup();
+			});
 
 	function sendMessage(msg) {
 		if (webSocket.readyState === 1) {
 			webSocket.send(msg);
+			console.log("client message : " + msg);
 		}
 	}
 
-	function gotousermode() {
-		console.log("setting clicked");
-	};
+	function gotosleep() {
+		if (currentconnect == 1) {
+			if (sleepindex == 0) {
 
+				sendMessage("7");
+			} else {
+
+				sendMessage("8");
+			}
+		} else {
+			tau.openPopup("#warningpopup");
+			if (setting_vibe.checked == true)
+				navigator.vibrate(1000);
+
+		}
+
+	};
 	function fine() {
 		if (currentconnect != 1) {
-			tau.openPopup("#1btnPopup");
-			navigator.vibrate(2000);
+			tau.openPopup("#warningpopup");
+			if (setting_vibe.checked == true)
+				navigator.vibrate(1000);
 		} else {
 			sendMessage("5");
+			tau.openPopup("#successpopup");
 			maintext.innerHTML = "CLICK!";
 		}
 	}
 
-	function appexit() {
-
-		console.log("app exit clicked");
-	};
-
 	function gotoback() {
 		console.log("gotoback clicked");
-		if (currentmode == 1) {
+		/*if (currentmode == 1) {
 			gotomain();
 		} else
-			gotoonoff();
+			gotoonoff();*/
+		tau.back();
 
 	};
-
+	
 	function gotosetting() {
 		console.log("setting clicked");
-		tau.changePage(setting);
+
+		tau.changePage(document.getElementById("setting"));
+
 	};
 
 	function onoffclicked() {
 
 		if (currentconnect != 1) {
-			tau.openPopup("#1btnPopup");
-			navigator.vibrate(2000);
+			tau.openPopup("#warningpopup");
+			if (setting_vibe.checked == true)
+				navigator.vibrate(1000);
 		} else {
 			if (currentonoff == 0) {
-				onoffbtn
-						.setAttribute(
-								'style',
-								"background: url(images/bgpoweron.png) transparent no-repeat center; background-position: center; height: 240px !important; background-size: 55%;");
 				currentonoff = 1;
-				maintext.innerHTML = "ON!";
 
 				/* Popup closes with Cancel button click */
 
 				sendMessage("1");
 
 			} else {
-				onoffbtn
-						.setAttribute(
-								'style',
-								"background: url(images/bgpoweroff.png) transparent no-repeat center; background-position: center; height: 240px !important; background-size: 55%;");
 				currentonoff = 0;
-				maintext.innerHTML = "OFF!";
 				sendMessage("2");
 
 			}
@@ -181,88 +245,169 @@
 	function gotoonoff() {
 
 		currentmode = 2;
-		tau.changePage(onoff);
+		tau.changePage(document.getElementById("onoff"));
 	};
 
 	function gotomain() {
 		console.log("main clicked");
-		maintext.innerHTML = "START!";
+
 		currentmode = 1;
-		tau.changePage(main);
+		tau.changePage(document.getElementById("main"));
+	};
+
+	function gotopower() {
+		console.log("power clicked");
+
+		currentmode = 3;
+		tau.changePage(document.getElementById("power"));
+	};
+
+	function onchangedCB(hrm) {
+
+		counter++;
+		if (counter > 100) {
+			/* Stop the sensor after detecting a few changes */
+			webapis.motion.stop("HRM");
+			if (hrm.heartRate < 75)
+				sendMessage("soft");
+			else if (hrm.heartRate >= 75 && hrm.heartRate < 100)
+				sendMessage("mid");
+			else if (hrm.heartRate >= 100 && hrm.heartRate < 140)
+				sendMessage("hard");
+			tau.closePopup();
+
+			setInterval(function() {
+				sendMessage("6");
+			}, 10000);
+
+		}
 	};
 
 	function start() {
 		console.log("button clicked");
-		maintext.innerHTML = "CLICK!";
 
-		// Define WebSocket url
-		var webSocketURL = "ws://192.168.0.33:80/";
-		//var webSocketURL = "ws://echo.websocket.org";
+		if (currentconnect == 1)
+			tizen.application.getCurrentApplication().exit();
+		else {
+			tau.openPopup("#connectpopup");
 
-		// Define WebSocket
-		webSocket = new WebSocket(webSocketURL);
+			var webSocketURL = "ws://192.168.0.26:80/";
+			//var webSocketURL = "ws://echo.websocket.org";
 
-		console.log("created");
+			// Define WebSocket
+			webSocket = new WebSocket(webSocketURL);
 
-		// When the WebSocket connection is established
-		webSocket.onopen = function(e) {
-			console.log('connection open, readyState : ' + e.target.readyState);
-			hohotext.innerHTML = "CONNECT!";
-			currentconnect = 1;
+			console.log("created");
 
-		};
+			// When the WebSocket connection is established
+			webSocket.onopen = function(e) {
 
-		// When the WebSocket message has been received
-		webSocket.onmessage = function(e) {
-			console.log('server message : ' + e.data);
+				console.log('connection open, readyState : '
+						+ e.target.readyState);
+				popuptext.innerHTML = "정확한 계산을 위해 심박수를 측정합니다.";
+				window.webapis.motion.start("HRM", onchangedCB);
 
-			/*if (e.data.indexOf("Tempvalue") != -1) {
+				currentconnect = 1;
+				onoff_con.innerHTML = "종료";
+				main_con.innerHTML = "종료";
 
-				var start = e.data.indexOf(":");
-				var end = e.data.indexOf(".");
-			 */
-			if(currentmode == 1)
-			maintext.innerHTML = e.data;
-			else if(currentmode == 2)
-			hohotext.innerHTML = e.data;
-			
+			};
 
-		};
+			// When the WebSocket message has been received
+			webSocket.onmessage = function(e) {
+				console.log('server message : ' + e.data);
 
-		// When fail the WebSocket connection or the WebSocket connection is closed with prejudice
-		webSocket.onerror = function(e) {
-			console.log('error, readyState : ' + e.target.readyState);
-			currentconnect = 0;
-		};
+				if (e.data == "6") {
+					if (setting_push.checked == true) {
+						tizen.power.turnScreenOn();
+						tizen.application.launch("0tO4FfDxPP.humanconditioner",
+								onsuccess2);
 
-		// When the WebSonection is closed
-		webSocket.onclose = function(e) {
-			console.log('current readyState : ' + e.target.readyState);
-			currentconnect = 0;
-		};
+						gotomain();
+						tau.openPopup("#pushpopup");
+						if (setting_vibe.checked == true)
+							navigator.vibrate(2000);
+					}
 
-		function closeConnection() {
-			if (webSocket.readyState === 1) {
-				webSocket.close();
+				} else if (e.data.indexOf("Tempvalue") != -1) {
+
+					var start = e.data.indexOf(":");
+					var end = e.data.indexOf(".");
+					var target = e.data.substring(start + 1, end);
+					Tempvalue.innerHTML = target;
+
+				} else if (e.data == "SLEEP ON") {
+
+					mainbtn.style.background = 'url(images/sleepCircle.png) transparent no-repeat center';
+					sleepindex = 1;
+					sleepbtn.innerHTML = "절전 모드 해제";
+
+				} else if (e.data == "SLEEP OFF") {
+
+					mainbtn.style.background = 'url(images/Circle.png) transparent no-repeat center';
+					sleepindex = 0;
+					sleepbtn.innerHTML = "절전 모드";
+
+				} else if (e.data == "Turn on the A/C" || e.data == "On") {
+					onoffbtn
+							.setAttribute(
+									'style',
+									"top: 20px; position: relative; background: url(images/bgpoweron.png) transparent no-repeat center; background-position: center; height: 333px !important; background-size: 70%;");
+					currentonoff = 1;
+				} else if (e.data == "Turn off the A/C" || e.data == "Off") {
+					onoffbtn
+							.setAttribute(
+									'style',
+									"top: 20px; position: relative; background: url(images/bgpoweroff.png) transparent no-repeat center; background-position: center; height: 333px !important; background-size: 70%;");
+					currentonoff = 0;
+
+				}
+
+				if (currentmode == 3)
+					powertext.innerHTML = e.data;
+
+			};
+
+			// When fail the WebSocket connection or the WebSocket connection is closed with prejudice
+			webSocket.onerror = function(e) {
+				console.log('error, readyState : ' + e.target.readyState);
+				currentconnect = 0;
+			};
+
+			// When the WebSonection is closed
+			webSocket.onclose = function(e) {
+				console.log('current readyState : ' + e.target.readyState);
+				currentconnect = 0;
+				onoff_con.innerHTML = "연결";
+				main_con.innerHTML = "연결";
+			};
+
+			function closeConnection() {
+				if (webSocket.readyState === 1) {
+					webSocket.close();
+				}
 			}
+			;
+
+			window.onload = function() {
+				document.getElementById('btnSendMessage').onclick = function(e) {
+					//sendMessage("123123");
+				}
+			};
+
+			console.log("you reach the end of the line");
 		}
-		;
-
-
-		window.onload = function() {
-			document.getElementById('btnSendMessage').onclick = function(e) {
-				//sendMessage("123123");
-			}
-		};
-
-		console.log("you reach the end of the line");
 	}
 
-	tau.event.enableGesture(element, new tau.event.gesture.Swipe({
+	tau.event.enableGesture(mainbtn, new tau.event.gesture.Swipe({
 		orientation : "vertical"
 	}));
 
-	tau.event.enableGesture(element, new tau.event.gesture.Swipe({
+	tau.event.enableGesture(mainbtn, new tau.event.gesture.Swipe({
+		orientation : "horizontal"
+	}));
+
+	tau.event.enableGesture(powertext, new tau.event.gesture.Swipe({
 		orientation : "horizontal"
 	}));
 
@@ -272,50 +417,67 @@
 
 	console.log("enable gesture");
 
-	element.addEventListener("swipe", function(e) {
+	mainbtn
+			.addEventListener(
+					"swipe",
+					function(e) {
+						console.log(e.detail.direction + "swipe event fired");
+
+						if (e.detail.direction == 'left') {
+							gotoonoff();
+						} else {
+							if (currentconnect != 1
+									&& (e.detail.direction == 'up' || e.detail.direction == 'down')) {
+								tau.openPopup("#warningpopup");
+								if (setting_vibe.checked == true)
+									navigator.vibrate(1000);
+							} else {
+								if (e.detail.direction == 'up') {
+
+									sendMessage("3");
+									tau.openPopup("#successpopup");
+								} else if (e.detail.direction == 'down') {
+
+									sendMessage("4");
+									tau.openPopup("#successpopup");
+								} else if (e.detail.direction == 'left')
+									gotoonoff();
+
+							}
+						}
+					});
+
+	powertext.addEventListener("swipe", function(e) {
 		console.log(e.detail.direction + "swipe event fired");
 
-		if (e.detail.direction == 'left') {
+		if (e.detail.direction == 'right') {
 			gotoonoff();
-		} else {
-			if (currentconnect != 1) {
-				tau.openPopup("#1btnPopup");
-				navigator.vibrate(2000);
-			} else {
-				if (e.detail.direction == 'up') {
-					maintext.innerHTML = "UP!";
-					sendMessage("3");
-				} else if (e.detail.direction == 'down') {
-					maintext.innerHTML = "DOWN!";
-					sendMessage("4");
-				} else if (e.detail.direction == 'left')
-					gotoonoff();
-				else
-				
-				 if (e.detail.direction == 'right')
-					maintext.innerHTML = "LEFT!";
-			}
+
 		}
+
 	});
 
 	onoffbtn.addEventListener("swipe", function(e) {
 		console.log(e.detail.direction + "swipe event fired");
 
 		if (e.detail.direction == 'right') {
+
 			gotomain();
+		} else if (e.detail.direction == 'left') {
+			gotopower();
+
 		} else {
 			if (currentconnect != 1) {
-				tau.openPopup("#1btnPopup");
-				navigator.vibrate(1000);
+				tau.openPopup("#warningpopup");
+				if (setting_vibe.checked == true)
+					navigator.vibrate(1000);
 			}
 
 			else {
-				if (e.detail.direction == 'left')
-					maintext.innerHTML = "RIGHT!";
+
 			}
 		}
 
-	}
-	);
+	});
 </script>
 </html>
